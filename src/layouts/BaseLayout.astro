@@ -6,9 +6,10 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
+  wide?: boolean;
 }
 
-const { title, description = "Economist covering emerging markets macro and monetary policy." } = Astro.props;
+const { title, description = "Economist covering emerging markets macro and monetary policy.", wide = false } = Astro.props;
 
 const SITE_NAME = "Mateus Godinho";
 ---
@@ -24,7 +25,7 @@ const SITE_NAME = "Mateus Godinho";
   </head>
   <body>
     <Nav />
-    <main class="wrap">
+    <main class={wide ? "wrap-wide" : "wrap"}>
       <slot />
     </main>
     <Footer />
