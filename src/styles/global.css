@@ -41,7 +41,7 @@
 :root {
   color-scheme: light dark;
 
-  --bg: #f5f7f9;
+  --bg: #eef1f4;
   --surface: #ffffff;
   --text-primary: #17222f;
   --text-secondary: #4c5b6b;
@@ -50,7 +50,8 @@
   --accent: #1f5a80;
   --accent-soft: rgba(31, 90, 128, 0.12);
   --accent-ink: #ffffff;
-  --shadow: 0 1px 2px rgba(23, 34, 47, 0.05), 0 8px 20px rgba(23, 34, 47, 0.07);
+  --shadow: 0 2px 4px rgba(23, 34, 47, 0.06), 0 14px 28px rgba(23, 34, 47, 0.1);
+  --radius: 18px;
   --max-width: 720px;
   --max-width-wide: 1040px;
 
@@ -222,7 +223,7 @@ h3 {
 }
 
 .card {
-  border-radius: 8px;
+  border-radius: var(--radius);
   padding: 20px 24px;
   background: var(--surface);
   box-shadow: var(--shadow);
@@ -243,14 +244,37 @@ h3 {
 }
 
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 9px 18px;
+  border-radius: 999px;
+  padding: 9px 10px 9px 20px;
   font-size: 13.5px;
   font-weight: 600;
   color: var(--text-primary);
   background: var(--surface);
+}
+
+.btn .icon-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.btn .icon-circle svg {
+  width: 13px;
+  height: 13px;
+}
+
+.btn-primary .icon-circle {
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .btn:hover {
@@ -324,7 +348,7 @@ h3 {
 .research-card .thumb {
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 14px;
   background: var(--surface);
   box-shadow: var(--shadow);
   margin-bottom: 12px;
@@ -366,7 +390,7 @@ h3 {
 /* --- sidebar --- */
 .side-card {
   background: var(--surface);
-  border-radius: 8px;
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 24px;
   margin-bottom: 24px;
@@ -395,10 +419,11 @@ h3 {
 }
 
 .profile-photo {
+  position: relative;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  border-radius: 6px;
-  margin: 16px 0;
+  border-radius: 14px;
+  margin: 16px 0 34px;
 }
 
 .profile-photo img {
@@ -406,6 +431,27 @@ h3 {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.photo-badge {
+  position: absolute;
+  left: 14px;
+  bottom: -18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: 3px solid var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+}
+
+.photo-badge svg {
+  width: 18px;
+  height: 18px;
 }
 
 .resume-summary {
@@ -428,9 +474,22 @@ h3 {
 }
 
 .resume-summary p:not(.label) {
+  position: relative;
   font-size: 13.5px;
   color: var(--text-secondary);
   margin: 0;
+  padding-left: 14px;
+}
+
+.resume-summary p:not(.label)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
 }
 
 .profile-card .btn-primary {
@@ -442,7 +501,7 @@ article img,
 article svg {
   max-width: 100%;
   height: auto;
-  border-radius: 10px;
+  border-radius: 14px;
   box-shadow: var(--shadow);
 }
 
