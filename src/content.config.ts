@@ -10,6 +10,7 @@ const articles = defineCollection({
     updatedDate: z.coerce.date().optional(),
     draft: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
+    cover: z.string().optional(),
   }),
 });
 

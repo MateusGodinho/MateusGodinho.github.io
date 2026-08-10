@@ -7,20 +7,26 @@ const sorted = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubD
 ---
 
 <BaseLayout title="Research" description="Independent research notes.">
-  <h1>Research</h1>
+  <p class="eyebrow">Research</p>
+  <h1>All research notes</h1>
+
   {sorted.length === 0 && <p style="color: var(--muted);">No articles published yet.</p>}
-  {sorted.map((post) => (
-    <a href={`/articles/${post.id}/`} style="text-decoration: none; color: inherit;">
-      <div class="card">
-        <h3>{post.data.title}{post.data.draft && " (draft)"}</h3>
-        <p class="meta">
+
+  <div class="research-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+    {sorted.map((post) => (
+      <a class="research-card" href={`/articles/${post.id}/`}>
+        {post.data.cover ? (
+          <div class="thumb">
+            <img src={post.data.cover} alt="" />
+          </div>
+        ) : (
+          <div class="thumb placeholder">{post.data.title}</div>
+        )}
+        <p class="cap">{post.data.title}{post.data.draft && " (draft)"}</p>
+        <p class="meta" style="text-align: center;">
           {post.data.pubDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
         </p>
-        <p>{post.data.description}</p>
-        <div>
-          {post.data.tags.map((t: string) => <span class="tag">{t}</span>)}
-        </div>
-      </div>
-    </a>
-  ))}
+      </a>
+    ))}
+  </div>
 </BaseLayout>
