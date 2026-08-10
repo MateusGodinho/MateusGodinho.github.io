@@ -12,19 +12,16 @@ const sorted = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubD
 
   {sorted.length === 0 && <p style="color: var(--muted);">No articles published yet.</p>}
 
-  <div class="research-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+  <div class="research-list">
     {sorted.map((post) => (
-      <a class="research-card" href={`/articles/${post.id}/`}>
-        {post.data.cover ? (
-          <div class="thumb">
-            <img src={post.data.cover} alt="" />
-          </div>
-        ) : (
-          <div class="thumb placeholder">{post.data.title}</div>
-        )}
-        <p class="cap">{post.data.title}{post.data.draft && " (draft)"}</p>
-        <p class="meta" style="text-align: center;">
-          {post.data.pubDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+      <a class="research-row" href={`/articles/${post.id}/`}>
+        <h3>{post.data.title}{post.data.draft && " (draft)"}</h3>
+        <div class="row-tags">
+          {post.data.tags.map((t: string) => <span class="tag">{t}</span>)}
+        </div>
+        <p class="row-excerpt">{post.data.description}</p>
+        <p class="row-date">
+          {post.data.pubDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
         </p>
       </a>
     ))}
