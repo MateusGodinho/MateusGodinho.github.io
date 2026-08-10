@@ -500,15 +500,15 @@ h3 {
   margin-top: 0;
 }
 
-.resume-summary p:not(.label) {
+.resume-summary p:not(.label):not(.sub-link) {
   position: relative;
   font-size: 13.5px;
   color: var(--text-secondary);
-  margin: 0;
+  margin: 8px 0 0;
   padding-left: 14px;
 }
 
-.resume-summary p:not(.label)::before {
+.resume-summary p:not(.label):not(.sub-link)::before {
   content: "";
   position: absolute;
   left: 0;
@@ -517,6 +517,23 @@ h3 {
   height: 6px;
   border-radius: 50%;
   background: var(--accent);
+}
+
+.resume-summary .label + p:not(.label):not(.sub-link) {
+  margin-top: 0;
+}
+
+.resume-summary .sub-link {
+  margin: 2px 0 0 14px;
+  font-size: 12px;
+}
+
+.resume-summary .sub-link a {
+  color: var(--muted);
+}
+
+.resume-summary .sub-link a:hover {
+  color: var(--accent);
 }
 
 .profile-card .btn-primary {
