@@ -6,6 +6,18 @@ import { getCollection } from "astro:content";
 const allArticles = await getCollection("articles", ({ data }) => !data.draft || import.meta.env.DEV);
 const featured = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 4);
 
+const ARTIFACTS = [
+  {
+    title: "Hawkish / Dovish Reader",
+    description: `Paste any central bank statement and score it on the same Henry (2008)
+      hawkish/dovish scale used in the SARB piece -- runs entirely in your browser,
+      nothing you paste is sent anywhere.`,
+    url: "https://claude.ai/code/artifact/fc089a17-83b4-45a0-a654-cb95c9e525f6",
+    relatedHref: "/articles/sarb-communication",
+    relatedLabel: "Reading the SARB Between the Lines",
+  },
+];
+
 const TAGLINE = "Economist covering emerging markets macro and monetary policy.";
 const BIO = `Six years as an economist at Genoa Capital, covering monetary policy and
   macro across emerging markets -- South Africa, China, and Central & Eastern Europe,
@@ -86,6 +98,26 @@ const BIO = `Six years as an economist at Genoa Capital, covering monetary polic
         </div>
 
         <p style="margin-top: 16px;"><a href="/articles">See all research &rarr;</a></p>
+      </section>
+
+      <section class="card">
+        <p class="eyebrow">Claude artifacts</p>
+        <p class="section-intro">Small interactive tools I build with Claude alongside the
+          research -- self-contained demos that run the actual method in your browser, no
+          install required. Adding to this as I go.</p>
+
+        <div class="artifact-list">
+          {ARTIFACTS.map((a) => (
+            <div class="artifact-row">
+              <h3>{a.title}</h3>
+              <p class="row-excerpt">{a.description}</p>
+              <p class="artifact-links">
+                <a href={a.url} target="_blank" rel="noopener">Open the tool &rarr;</a>
+                <span class="related">Built for <a href={a.relatedHref}>{a.relatedLabel}</a></span>
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   </div>
