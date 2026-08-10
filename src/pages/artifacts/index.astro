@@ -1,0 +1,27 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { ARTIFACTS } from "../../data/artifacts";
+---
+
+<BaseLayout title="Artifacts" description="Interactive tools built with Claude alongside the research.">
+  <p class="eyebrow">Claude artifacts</p>
+  <h1>All artifacts</h1>
+  <p class="section-intro" style="margin-bottom: 8px;">Small interactive tools I build with
+    Claude alongside the research -- self-contained demos that run the actual method in
+    your browser, no install required. Adding to this as I go.</p>
+
+  {ARTIFACTS.length === 0 && <p style="color: var(--muted);">No artifacts published yet.</p>}
+
+  <div class="artifact-list">
+    {ARTIFACTS.map((a) => (
+      <div class="artifact-row">
+        <h3>{a.title}</h3>
+        <p class="row-excerpt" style="-webkit-line-clamp: unset;">{a.description}</p>
+        <p class="artifact-links">
+          <a href={a.url} target="_blank" rel="noopener">Open the tool &rarr;</a>
+          <span class="related">Built for <a href={a.relatedHref}>{a.relatedLabel}</a></span>
+        </p>
+      </div>
+    ))}
+  </div>
+</BaseLayout>
