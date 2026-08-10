@@ -64,12 +64,18 @@ const EDUCATION = [
       "Research Assistant to Professor Cecilia Machado (Labor Economics / Econometrics)",
       "Teaching Assistant for Statistics and Regulation Economics",
     ],
+    links: [
+      { label: "Master's thesis", href: "https://repositorio.fgv.br/items/d3697bf0-eb8e-4733-8b48-c6df4680a689" },
+    ],
   },
   {
     degree: "B.A. in Economics",
     org: "Universidade de São Paulo (FEA-USP)",
     period: "2011 – 2015",
     bullets: [],
+    links: [
+      { label: "Undergraduate thesis (published as journal article)", href: "https://revistas.usp.br/ecoa/pt_BR/article/view/142937/187822" },
+    ],
   },
   {
     degree: "Exchange Program",
@@ -99,6 +105,7 @@ const LANGUAGES = [
 
 <BaseLayout title="CV" description="Curriculum vitae — Mateus Godinho, Economist.">
   <section>
+    <p class="eyebrow">Curriculum vitae</p>
     <h1>CV</h1>
     <p class="meta">São Paulo, Brazil · mateus.godinho0704@gmail.com</p>
     <p>
@@ -132,6 +139,9 @@ const LANGUAGES = [
             {e.bullets.map((b) => <li>{b}</li>)}
           </ul>
         )}
+        {e.links?.map((l) => (
+          <p class="card-link"><a href={l.href} target="_blank" rel="noopener">&rarr; {l.label}</a></p>
+        ))}
       </div>
     ))}
   </section>
