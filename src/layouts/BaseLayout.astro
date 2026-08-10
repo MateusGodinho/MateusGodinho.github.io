@@ -7,9 +7,15 @@ interface Props {
   title: string;
   description?: string;
   wide?: boolean;
+  hideNav?: boolean;
 }
 
-const { title, description = "Economist covering emerging markets macro and monetary policy.", wide = false } = Astro.props;
+const {
+  title,
+  description = "Economist covering emerging markets macro and monetary policy.",
+  wide = false,
+  hideNav = false,
+} = Astro.props;
 
 const SITE_NAME = "Mateus Godinho";
 ---
@@ -24,7 +30,11 @@ const SITE_NAME = "Mateus Godinho";
     <title>{title} · {SITE_NAME}</title>
   </head>
   <body>
-    <Nav />
+    {!hideNav && (
+      <div class={wide ? "wrap-wide" : "wrap"} style="padding-top: 32px;">
+        <Nav />
+      </div>
+    )}
     <main class={wide ? "wrap-wide" : "wrap"}>
       <slot />
     </main>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
 import { getCollection } from "astro:content";
 
 const allArticles = await getCollection("articles", ({ data }) => !data.draft || import.meta.env.DEV);
@@ -12,7 +13,7 @@ const BIO = `Six years as an economist at Genoa Capital, covering monetary polic
   including code, on central bank communication and inflation dynamics.`;
 ---
 
-<BaseLayout title="Home" description={TAGLINE} wide>
+<BaseLayout title="Home" description={TAGLINE} wide hideNav>
   <h1 class="visually-hidden">Mateus Godinho — {TAGLINE}</h1>
 
   <div class="home-grid">
@@ -51,30 +52,36 @@ const BIO = `Six years as an economist at Genoa Capital, covering monetary polic
       </div>
     </aside>
 
-    <section>
-      <p class="eyebrow">About me</p>
-      <p>{BIO} <a href="/cv">See full CV &rarr;</a></p>
+    <div class="home-main">
+      <Nav />
 
-      <p class="eyebrow" style="margin-top: 40px;">Latest research&hellip;</p>
+      <section class="card">
+        <p class="eyebrow">About me</p>
+        <p>{BIO} <a href="/cv">See full CV &rarr;</a></p>
+      </section>
 
-      {featured.length === 0 && <p style="color: var(--muted);">No articles published yet.</p>}
+      <section class="card">
+        <p class="eyebrow">Latest research&hellip;</p>
 
-      <div class="research-grid">
-        {featured.map((post) => (
-          <a class="research-card" href={`/articles/${post.id}/`}>
-            {post.data.cover ? (
-              <div class="thumb">
-                <img src={post.data.cover} alt="" />
-              </div>
-            ) : (
-              <div class="thumb placeholder">{post.data.title}</div>
-            )}
-            <p class="cap">{post.data.title}{post.data.draft && " (draft)"}</p>
-          </a>
-        ))}
-      </div>
+        {featured.length === 0 && <p style="color: var(--muted);">No articles published yet.</p>}
 
-      <p style="margin-top: 8px;"><a href="/articles">See all research &rarr;</a></p>
-    </section>
+        <div class="research-grid">
+          {featured.map((post) => (
+            <a class="research-card" href={`/articles/${post.id}/`}>
+              {post.data.cover ? (
+                <div class="thumb">
+                  <img src={post.data.cover} alt="" />
+                </div>
+              ) : (
+                <div class="thumb placeholder">{post.data.title}</div>
+              )}
+              <p class="cap">{post.data.title}{post.data.draft && " (draft)"}</p>
+            </a>
+          ))}
+        </div>
+
+        <p style="margin-top: 8px;"><a href="/articles">See all research &rarr;</a></p>
+      </section>
+    </div>
   </div>
 </BaseLayout>
