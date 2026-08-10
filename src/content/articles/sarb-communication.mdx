@@ -1,0 +1,484 @@
+---
+title: "Reading the SARB Between the Lines: A Text-Based Look at SARB Communication"
+description: "Updating a text-mining study of SARB statements and speeches (1994-2026): communication volume, topic evolution, and a replicated hawkish/dovish index."
+pubDate: 2026-07-28
+draft: false
+tags: ["SARB", "monetary policy", "NLP", "South Africa"]
+---
+
+**Key takeaways**
+
+- Speech volume roughly tripled from the early 2000s to a 2017 peak, then nearly halved by
+  2019 -- *before* COVID. MPC statements, by contrast, have been a metronome: six meetings
+  a year, every year, since 1999.
+- 2017 stacks up: peak speech volume, the pivot to an explicit 4.5% midpoint, the Financial
+  Sector Regulation Act, and the ANC's nationalisation resolution -- three candidate
+  explanations, none proven, none exclusive.
+- The inflation target changed in *kind* three times in 26 years: adopted in 2000, pivoted
+  to the 4.5% midpoint in 2017, replaced with a 3% point target in 2025.
+- Topic modelling on speeches reads like a timeline: exchange rate policy dominated
+  pre-2010, financial stability rose structurally after 2008, and inflation itself has
+  been the largest single theme since the mid-2010s.
+- A replicated Henry (2008) hawkish/dovish index tracks real policy directionally (hikes >
+  holds > cuts) but runs hot throughout, speeches more so than statements. By that history,
+  the "surprise" July 2026 hold wasn't much of one: similarly hawkish meetings have held
+  52% of the time, and conditioned on the cycle position, it's closer to a coin flip.
+
+## 1. Setting the stage
+
+du Rand, Erasmus, Hollander, Reid and van Lill (2021) ran the definitive text-mining study
+of SARB communication, covering everything the Bank said publicly from 1994 through 2020. Six
+years on, the world it described has moved: a pandemic and its policy response, the
+fastest hiking cycle of the inflation-targeting era, and -- as of November 2025 -- a
+redefinition of the target itself. This piece updates that picture through July 2026, adds
+a rate-decision-validated hawkish/dovish index that the original didn't build (Section 3),
+and closes by turning that index on the meeting that motivated this whole exercise
+(Section 4).
+
+The corpus: every MPC statement on record (173, since the Committee's first meeting in
+October 1999) and every speech by a Governor, Deputy Governor, or other senior official on
+record on the SARB's own site (604, since August 1994; 511 were successfully scraped, and
+502 of those are in English and used throughout the analysis below -- the rest are official
+translations of the same speeches into isiXhosa, isiZulu, or Xitsonga). Both were scraped
+directly from resbank.co.za; code and data are on
+[GitHub](https://github.com/MateusGodinho/sarb-hawkish-dove), including a notebook that
+reproduces every chart and number in this piece from scratch.
+
+<img src="/images/communication-volume.png" alt="SARB communication volume by year: MPC statements vs. speeches, with Governor tenures and inflation-target changes marked" />
+
+One honest dent in that line: the visible dip in speeches across 2002-2006 is mostly an
+archival gap, not a real slowdown. The SARB's own site still lists a normal 10-16 speeches
+a year for that stretch, but most of the linked pages or PDFs from exactly that window are
+now dead or were never digitised -- of the 93 speeches (of 604 indexed) we couldn't recover
+any text for, 54% fall in 2002-2006 alone, against a background failure rate of under 10%
+everywhere else. Treat that stretch of the speeches line as a lower bound, not a measurement.
+
+Four governors cover the sample: Chris Stals, Tito Mboweni, Gill Marcus, and Lesetja
+Kganyago (in office since November 2014). Layer the volume of speeches on top of that
+timeline and a clear story shows up.
+
+Speeches climbed steadily through the 2000s and accelerated hard under Gill Marcus
+(2009-2014). She was explicit about why: in a 2014 address on central bank communication,
+Marcus pointed to a 2011 survey finding that **45% of South Africans didn't know the SARB
+existed**, and argued that more engagement "reduced antagonism towards the Bank,
+particularly when unpopular policies have to be implemented." Communication, in her
+framing, had become a policy instrument in its own right -- not just a courtesy.
+
+The volume kept climbing into 2017, then rolled over. By 2019 it had nearly halved from
+the 2017 peak, and that decline started a full year before Covid gave every central bank
+a reason to cancel its calendar. Three candidate explanations sit on the table for why
+2017 was the turning point -- we don't think any one of them settles it alone.
+
+**The mandate had just been explained.** du Rand et al. themselves point to an
+institutional driver behind the speech volume and complexity climbing through this
+period: the SARB's mandate formally expanded to include financial stability, announced in
+October 2010 (in the thick of the Marcus era) and culminating, seven years later, in the
+Financial Sector Regulation Act (FSR Act No. 9), signed into law on 21 August 2017. As the
+authors put it, MPC statements "adjust in response to crises and relevant institutional
+changes such as the expansion of the mandate to include financial stability... [but do so]
+in a very prudent and predictable manner" -- it was the speeches, aimed at "more
+specialized audiences at universities, policy and society conferences, and the SARB's
+AGM," that did the heavier lifting of explaining what the new mandate actually meant.
+On this reading, speech volume was elevated for as long as there was a seven-year
+legislative process to narrate -- and once the FSR Act was signed, part of the job was
+simply done.
+
+**The message got a number.** A more speculative reading, ours rather than the paper's:
+2017 is also when SARB communication got specific about what success would look like --
+the explicit pivot to the 4.5% midpoint gave the Bank one number to repeat instead of a
+range to describe, at the same moment (per du Rand et al.) that its speeches were already
+reaching a wider audience than ever. A simpler, more repeatable message may need fewer
+speeches to land it.
+
+**The Bank was under political attack.** The timing also lines up with the SARB's most
+serious political fight of the period: a June 2017 Public Protector report that tried
+(and ultimately failed, overturned in court) to change the Bank's mandate, followed by a
+December 2017 ANC conference resolution calling for the SARB to be nationalised -- a fight
+Kganyago would later describe as "barbarians at the gate." Whether a more guarded,
+consolidated communication posture during that fight was deliberate is not something we
+can prove from the data alone.
+
+What *is* unambiguous is the 2020-2021 collapse (in-person events simply stopped
+happening), and the partial recovery since.
+
+The target itself is the other axis worth tracking. It moved three times in ways that
+matter beyond a simple number: the 2000 adoption of inflation targeting; a 2017 shift in
+language ("the MPC would prefer expectations to be anchored closer to the mid-point of
+the target range" -- the first time this appears verbatim in the corpus, becoming
+standard phrasing by March 2018); and the November 2025 replacement of the 3-6% range
+with a 3% ± 1 percentage point target, ending 25 years of range-targeting.
+
+## 2. What are they talking about? Topic evolution
+
+du Rand et al. also ran their speeches corpus through a topic model -- Latent Dirichlet
+Allocation (LDA), an unsupervised algorithm that groups words into themes purely from how
+often they co-occur, with no labels supplied in advance. Following Coco and Viegi (2020),
+they settled on six topics, and only for speeches: when they ran the same algorithm on MPC
+statements, the topics that came out were indistinguishable from one another (every one
+dominated by "inflation," "growth," "rate," "price" -- unsurprising, since every statement
+is structurally built to discuss the same handful of inflation drivers). We reproduced that
+check before doing anything else, and found the same thing: statements don't separate into
+distinct topics, speeches do.
+
+**Replicating the paper's setup, then pushing past it.** As a first check, we ran the exact
+configuration described in the paper -- six topics, no researcher input into which words
+end up where -- and it reproduced their six themes almost word for word, including a niche
+one (regional payment-system cooperation, driven by words like "SADC" and "settlement")
+that we wouldn't have guessed existed going in. That gave us confidence the pipeline was
+sound. However, our purpose here differs from the paper's in one respect: where du Rand et
+al. were satisfied with six broad themes sufficient to support a historical narrative, we
+were specifically interested in a more granular decomposition -- fine enough to separate,
+for instance, the *design* of the inflation-targeting regime (the mandate, the framework,
+the objective) from the *state* of inflation at any given time (this quarter's number, the
+forecast, expectations), two things a six-topic model collapses into one. At k=6, that
+distinction is simply not available; achieving it requires more topics than the paper
+used.
+
+So we pushed the model further than the paper did, on two dimensions:
+
+| | du Rand et al. (2021) | This update |
+|---|---|---|
+| Topics (k) | 6 | 12 raw topics -> 6 selected final themes |
+| Vocabulary | single words only | single words *and* two-word phrases ("inflation targeting," "target range") |
+| Rare-term cutoff | terms in >=50 documents (footnote 25) | terms in >=40 documents |
+| Sample window | speeches through ~2019 | speeches through 9 July 2026 |
+
+The phrase-level change (bigrams, in the jargon) did most of the work: once the model can
+treat "inflation targeting" as a single atomic term rather than two separate common words,
+it stops needing to lump every inflation-adjacent sentence into one bucket. Reaching a
+stable final configuration took some iteration. We first tried k=15, which did cleanly
+split the *design* of the inflation-targeting regime (mandate, framework, objective) from
+its *day-to-day reading* (forecast, expectations) -- but it was more granular than we
+needed, and testing several random seeds at that resolution showed some splits (notably
+Financial Stability versus a general "global crisis" theme) were not stable: which
+documents landed where shifted from one seed to the next. Dropping to k=10 for a leaner
+model made that instability worse, not better. k=12 turned out to be the sweet spot --
+Financial Stability and Global Crisis, Debt & Fiscal Risk separate cleanly and consistently
+at that resolution, and it surfaced a theme we didn't have at all before: explicit
+discussion of the SARB's own institutional independence and legal mandate (words like
+"Act," "independence," "central banks").
+
+Even with all of that, one split never held up: the *design* of the inflation-targeting
+regime kept bleeding back into its *day-to-day reading*, and vice versa, across every
+configuration we tried. We tested it explicitly rather than assuming it -- comparing the
+raw weight the word "inflation" itself carried in each candidate topic -- and confirmed the
+overlap was real, not a labelling accident. Rather than force a distinction the data won't
+reliably support, we merged the two into a single "Inflation: Targeting & Outlook" theme.
+Two more raw topics turned out to be the same underlying "crisis" content viewed through
+different historical lenses (1997-98 Asian/Russian-crisis vocabulary versus later
+sovereign-debt/IMF vocabulary) and were likewise merged into "Global Crisis, Debt & Fiscal
+Risk." The remaining four raw topics were dropped as noise or as redundant restatements of
+themes we already had. That left six final themes.
+
+<img src="/images/topic-words-bars.png" alt="Top 10 terms associated with each of the 6 selected topics, ranked by relative frequency within the topic" />
+
+The chart above is the direct equivalent of du Rand et al.'s Figure 6: for each theme, the
+words the model actually associates with it, ranked by how strongly. It's the evidence
+behind the labels -- "Inflation: Targeting & Outlook" is dominated, unambiguously, by the
+word *inflation* itself, followed by *growth*, *rate*, *central*, *target*; "Financial
+Stability" by *financial*, *regulatory*, *stability*, *banks*; "Global Crisis, Debt & Fiscal
+Risk" by *crisis*, *global*, *countries*, *debt*, *emerging*.
+
+<img src="/images/topic-evolution-bars.png" alt="Evolution of the 6 selected speech topics by year, 1994-2026: average topic probability weight per speech" />
+
+This second chart replicates du Rand et al.'s Figure 7: for every year, what share of the
+*average* speech's content the model assigns to each theme (a soft measure -- most speeches
+touch several themes at once; this tracks the weighted mix, not a single "dominant" topic
+per speech). Read across all six panels and a fairly coherent history of the SARB's
+communication priorities falls out:
+
+- **Exchange Rate Policy** dominates the early sample, peaking at 33.7% of the average
+  speech's content in 1996 -- the year of the first post-apartheid currency crisis -- stays
+  elevated through the second rand crisis of 2001 (16.2%), then fades to near-zero by the
+  2010s as inflation targeting took over as the organising framework for policy.
+- **Inflation: Targeting & Outlook** spikes to 54.5% in 2000, the year the regime was
+  adopted, dips through the mid-2000s, then climbs on a fairly persistent uptrend from the
+  mid-2010s onward -- 48.3% in 2016, 56.9% in 2021, 48.0% in 2023 -- consistent with a
+  central bank talking more, not less, about inflation once the post-pandemic price shock
+  and the mandate debate around it took hold.
+- **Global Crisis, Debt & Fiscal Risk** is the closest thing to a crisis dial: negligible
+  through the 1990s, it rises steadily from 2008 (9.5%) to a sample-period high in 2013
+  (27.1%) -- the global financial crisis and the multi-year European sovereign-debt crisis
+  that followed it -- before receding, with smaller subsequent bumps in 2020 (16.6%, Covid)
+  and 2023 (12.3%).
+- **Financial Stability** is a story of structural, not cyclical, change: negligible before
+  2008, then a step up that persists -- 23.8% in 2014, 25.1% in 2017, and a sample-period
+  high of 34.5% in 2025 -- consistent with the mandate becoming a standing part of the
+  SARB's job description rather than a response to any one event. The 2025 peak specifically
+  is also a composition effect worth naming: only 16 speeches were delivered that year --
+  well below the 2017 count -- and five of them are unusually dense in financial-stability
+  vocabulary. Four are Fundi Tshazibana's, Deputy Governor and CEO of the Prudential
+  Authority, whose speaking mandate *is* bank supervision (AI and financial stability,
+  climate risk, green finance, supervisory leadership); the fifth is Kganyago's own address
+  on the global Basel III deregulation debate. With a small denominator, a handful of
+  on-mandate speeches from the right speaker is enough to set a series high.
+- **Growth, Development & Labour Market** and **Financial and Payment System** are the two
+  quieter themes -- present throughout, occasionally spiking (payment systems at 20.7% in
+  1998, growth at 31.1% in 2003 and 37.8% in 2004), but both trail off to near-nothing in
+  the most recent years of the sample.
+
+## 3. A hawkish/dovish index for SARB communication
+
+du Rand et al. build their sentiment index on the method from Erasmus and Hollander (2020):
+a bag-of-words dictionary approach from Henry (2008), originally built for earnings-call
+transcripts. Every document is scored by counting words from two lists -- "hawkish"
+(positive, in Henry's original finance framing) and "dovish" (negative) -- and combining the
+counts into `2 x (H - D) / (H + D)`, bounded between -2 and +2. It's a blunt instrument
+next to the topic model in Section 2 -- no context, no negation-handling, just word counts
+against a fixed dictionary -- but it's the same blunt instrument the literature uses, which
+is the point of replicating it rather than inventing something more sophisticated.
+
+We built three views of the same underlying score: statements-only (173 meetings),
+speeches-only (502 English-language speeches), and a combined series that pools both. The
+combined series is the one worth dwelling on, because it isn't just an average. Following
+the paper's own logic -- that speeches between MPC meetings are part of the same
+communication stream as the statement that follows them -- we assign every speech to the
+meeting-window it falls into (the period from the previous meeting, exclusive, through the
+current one, inclusive) and compute the combined reading for each meeting as an exact,
+weighted decomposition: `combined = contribution from the statement + contribution from
+that window's speeches`. That decomposition is what makes the second chart below possible --
+for any meeting, you can see whether a hawkish or dovish reading was driven by what the MPC
+itself said, or by what the Governor and deputies said in the weeks before it.
+
+<iframe src="/charts/combined-index-full.html" title="SARB combined hawkish/dovish index (Henry 2008), 1994-2026" style="width:100%; height:480px; border:none; border-radius:8px;" />
+
+Two sanity checks before reading anything into the shape of this series. First, does it
+move with actual policy? Splitting the 155 meetings with a recorded rate decision by
+outcome, the mean combined-index reading is 0.78 for hikes, 0.64 for holds, and 0.39 for
+cuts -- the ordering a hawkish/dovish index should have, even though every bucket sits on
+the positive (hawkish) side of zero. That last point is a real calibration issue, not a
+rounding error: du Rand et al.'s own version of this index runs even hotter than ours over
+the overlapping period, so a persistent hawkish skew looks like a property of the Henry
+dictionary applied to central-bank text in general, not a bug specific to this
+implementation -- central bankers, it turns out, use a lot of words Henry's finance
+dictionary scores as "positive" (*stability*, *confidence*, *sound*) regardless of the
+actual policy stance.
+
+Second, do the extremes match history? The most hawkish reading in the sample sits at
+2002 -- four separate meetings that year score above 1.0, the highest string of readings
+anywhere in the 27 years -- squarely in the aftermath of the 2001 rand collapse and the
+double-digit CPI print that followed it. The most dovish readings are 5 February 2009
+(-0.24, deep in the global financial crisis cutting cycle), 21 November 2019 (-0.26,
+ahead of the growth-driven cuts of early 2020), and 21 May 2020 (-0.20, the pandemic
+emergency cut). Every one of these hawkish and dovish extremes sits exactly where a reader
+of Section 1's timeline would expect it to fall.
+
+<iframe src="/charts/contribution-full.html" title="SARB combined index decomposed into statement vs. speech contribution, by meeting" style="width:100%; height:480px; border:none; border-radius:8px;" />
+
+The decomposition makes the mechanics visible. Take the most recent meeting, 23 July 2026
+(a hold, at 7.00%): the statement itself contributes a mild +0.12 to the combined reading of
++0.78 -- the speeches given since the previous meeting account for the other +0.66. In
+periods with a busy speaking calendar, the combined index is doing more than smoothing the
+statement series; it's letting the weeks of public commentary around a meeting outvote the
+meeting's own text.
+
+**This is a first version.** The Henry (2008) dictionary was built for a different genre of
+text (equity-analyst earnings calls) applied here to a central bank's, and the hawkish skew
+documented above is the clearest sign that a purely dictionary-based method has a ceiling.
+The natural next iteration is a second scoring method -- an LLM-based classifier that reads
+for stance rather than counting words -- run alongside this one as a check on where the two
+agree and where they don't. That comparison is future work, not something we've built yet.
+
+The sample runs through the SARB's 23 July 2026 MPC meeting (a hold, at 7.00%) and the most
+recent speech on record, delivered 9 July 2026.
+
+## 4. So, about that July hold
+
+This piece exists because of one meeting. Going into the 23 July 2026 MPC decision, the
+majority of market pricing was for a hike -- the backdrop was an energy price shock tied to
+the US-Iran conflict, the kind of exogenous, supply-side inflation risk that central banks
+typically lean hawkish against. The SARB held at 7.00% instead. We're not going to
+relitigate whether it *should* have hiked -- that's a monetary-policy argument, not a
+text-mining one. What the index built in Section 3 can actually do is narrower and more
+useful: not judge whether the communication was hawkish enough to have justified a hike, but
+check how compatible a *hold* is with a reading this hawkish, by the same yardstick used
+throughout this piece.
+
+The combined index for that meeting is +0.78 -- well above the sample average of roughly
++0.5, and squarely in hawkish territory by this measure. The question isn't whether that
+reading was high enough to back the market's hike call; it's whether a hold is a decision
+this method would recognise as normal at a reading that hawkish. So we pulled every meeting
+since 1999 whose combined index lands within 0.05 of July's reading -- 21 meetings, spanning
+five different SARB rate cycles -- and looked at what the Committee actually did each time:
+
+<table>
+<thead>
+<tr><th>Index</th><th>Meeting</th><th>Context</th><th>Move</th></tr>
+</thead>
+<tbody>
+<tr><td>0.729</td><td>20 May 2021</td><td>pandemic-era record-low rates</td><td>hold, 3.50%</td></tr>
+<tr><td>0.731</td><td>20 Sep 2001</td><td>post-rand-crisis disinflation, global slowdown</td><td>cut, to 9.50%</td></tr>
+<tr><td>0.732</td><td>10 Sep 2003</td><td>aggressive post-rand-crisis easing cycle</td><td>cut, 11.00% to 10.00%</td></tr>
+<tr><td>0.737</td><td>30 May 2024</td><td>rates held near cycle peak</td><td>hold, 8.25%</td></tr>
+<tr><td>0.739</td><td>22 Nov 2012</td><td>extended post-GFC accommodation</td><td>hold, 5.00%</td></tr>
+<tr><td>0.746</td><td>19 Sep 2024</td><td>start of the 2024-25 disinflation cycle</td><td>cut, 8.25% to 8.00%</td></tr>
+<tr><td>0.747</td><td>22 Sep 2011</td><td>post-GFC low rates, Eurozone debt crisis</td><td>hold, 5.50%</td></tr>
+<tr><td>0.750</td><td>11 Dec 2003</td><td>tail of the post-rand-crisis easing cycle</td><td>cut, 8.50% to 8.00%</td></tr>
+<tr><td>0.751</td><td>11 Oct 2007</td><td>pre-GFC inflation-fighting cycle</td><td>hike, 10.00% to 10.50%</td></tr>
+<tr><td>0.753</td><td>25 Mar 2010</td><td>post-GFC easing cycle</td><td>cut, 7.00% to 6.50%</td></tr>
+<tr><td>0.760</td><td>26 Feb 2004</td><td>low-inflation calm, mid-2000s</td><td>hold, 8.00%</td></tr>
+<tr><td>0.760</td><td>13 Apr 2006</td><td>calm before the 2006 hiking cycle</td><td>hold, 7.00%</td></tr>
+<tr><td>0.773</td><td>14 Oct 2004</td><td>low-inflation calm, mid-2000s</td><td>hold, 7.50%</td></tr>
+<tr><td>0.777</td><td>24 Nov 2022</td><td>global inflation-fighting hiking cycle</td><td>hike, 6.25% to 7.00%</td></tr>
+<tr class="highlight"><td>0.778</td><td>23 Jul 2026</td><td>US-Iran conflict energy price shock</td><td>hold, 7.00%</td></tr>
+<tr><td>0.779</td><td>18 Nov 2021</td><td>first hike of post-pandemic normalisation</td><td>hike, 3.50% to 3.75%</td></tr>
+<tr><td>0.783</td><td>21 Nov 2024</td><td>continuing the 2024-25 easing cycle</td><td>cut, 8.00% to 7.75%</td></tr>
+<tr><td>0.790</td><td>14 Aug 2008</td><td>rate peak just before the GFC hit</td><td>hold, 12.00%</td></tr>
+<tr><td>0.790</td><td>27 Mar 2014</td><td>low growth, pre-taper-tantrum adjustment</td><td>hold, 5.50%</td></tr>
+<tr><td>0.803</td><td>25 May 2023</td><td>near the end of the hiking cycle</td><td>hike, 7.75% to 8.25%</td></tr>
+<tr><td>0.815</td><td>20 Sep 2012</td><td>extended post-GFC accommodation</td><td>hold, 5.00%</td></tr>
+<tr><td>0.826</td><td>22 Apr 2004</td><td>low-inflation calm, mid-2000s</td><td>hold, 8.00%</td></tr>
+</tbody>
+</table>
+
+Of these 21 comparable-communication meetings, 11 (52%) held, 6 (29%) cut, and only 4 (19%)
+hiked. A hawkish-reading meeting has historically been roughly *twice as likely* to end in a
+hold as a hike, and nearly as likely to end in a cut as a hike. On that base rate, the July
+2026 hold isn't the surprise it was priced as -- it's the modal outcome for a meeting that
+talks like this one did.
+
+**But that base rate mixes meetings from very different points in the rate cycle**, and
+July 2026 wasn't just hawkish-sounding -- it also came right after a hike (May 2026, to
+7.00%), which is a meaningfully different starting point than a hawkish reading that follows
+a hold or a cut. So we narrowed further: of the 21 comparables above, only five *also*
+followed a hike, the same position in the cycle as July 2026:
+
+<table>
+<thead>
+<tr><th>Index</th><th>Meeting</th><th>Context</th><th>Move</th></tr>
+</thead>
+<tbody>
+<tr><td>0.751</td><td>11 Oct 2007</td><td>pre-GFC inflation-fighting cycle</td><td>hike, 10.00% to 10.50%</td></tr>
+<tr><td>0.790</td><td>14 Aug 2008</td><td>rate peak just before the GFC hit</td><td>hold, 12.00%</td></tr>
+<tr><td>0.790</td><td>27 Mar 2014</td><td>low growth, pre-taper-tantrum adjustment</td><td>hold, 5.50%</td></tr>
+<tr><td>0.777</td><td>24 Nov 2022</td><td>global inflation-fighting hiking cycle</td><td>hike, 6.25% to 7.00%</td></tr>
+<tr><td>0.803</td><td>25 May 2023</td><td>near the end of the hiking cycle</td><td>hike, 7.75% to 8.25%</td></tr>
+<tr class="highlight"><td>0.778</td><td>23 Jul 2026</td><td>US-Iran conflict energy price shock</td><td>hold, 7.00%</td></tr>
+</tbody>
+</table>
+
+That's a much closer call: 3 of 5 (60%) hiked again, 2 of 5 (40%) held -- nowhere near the
+lopsided 52/29/19 split of the full comparison set. In other words, the unconditional base
+rate's lean toward "hold" is being driven largely by hawkish-sounding meetings that came
+after a hold or a cut, where a hold is obviously the path of least resistance. Once a hiking
+cycle is actually underway, a similarly hawkish reading is closer to a coin flip between
+"one more hike" and "pause here" -- which is exactly the honest answer to what this piece
+set out to check: the index on its own doesn't clearly justify continuing the cycle, but it
+doesn't clearly justify stopping it either. Whatever tipped July 2026 toward a hold, it
+wasn't something this communication-only measure could have called in advance.
+
+**Does splitting statements from speeches sharpen any of this?** The combined index pools
+two very different kinds of document, and Section 2's topic model already hinted that
+speeches range far more broadly than statements -- a Governor's speech might spend half its
+content on financial stability, global growth, or the payment system before ever touching
+the current inflation print, while an MPC statement exists for exactly one purpose: to
+justify that meeting's rate decision. If speeches are structurally noisier on the specific
+question this piece is asking, redoing the same ±0.05 exercise on each channel alone should
+show it.
+
+**Speeches alone.** Scored purely on the average tone of speeches in the window before each
+meeting (excluding windows with none), 11 historical windows sit within 0.05 of July 2026's
+speech-only reading (+0.77): 4 cut (36%), 4 held (36%), 3 hiked (27%) -- closer to a
+three-way tie than any kind of usable signal. That lines up with a direct check we ran
+separately: Henry-scored speeches correlate with the rate move at the meeting that follows
+at only r=0.14 (Pearson, vs. the basis-point change). Speeches alone don't sharpen this
+question, they blur it.
+
+**Statements alone.** The MPC statement is the channel built specifically to justify a rate
+decision, and scored on its own, July 2026's statement reads +0.83 -- hawkish even relative
+to the combined index. Comparably-toned statements (13 within 0.05, 11 with a recorded
+outcome) split 55% hold, 27% hike, 18% cut -- still hold-majority, but a shade closer to
+even than the pooled comparison, and this channel correlates far better with the actual
+decision (r=0.46) than speeches do.
+
+| Channel | Comparable meetings (±0.05) | Hold | Hike | Cut | Pearson *r* vs. bps change |
+|---|---|---|---|---|---|
+| Combined (statements + speeches) | 21 | 52% | 19% | 29% | 0.47 |
+| Statements alone | 13 (11 known) | 55% | 27% | 18% | 0.46 |
+| Speeches alone (pre-meeting window) | 11 | 36% | 27% | 36% | 0.14 |
+
+Even isolating the sharpest, most policy-relevant channel available, though, a hold is
+still the plurality outcome for a similarly hawkish statement -- it doesn't flip the
+verdict, it just narrows the margin slightly. No channel, alone or combined, makes a
+decisive communication-based case that the SARB *should* have hiked in July 2026. The
+statement is consistently the more informative signal of the two, both here and in the
+direct correlation check; speeches, exactly as Section 2's topic model would predict, are
+simply talking about too much else to reliably move the needle on this one question.
+
+That's a superficial conclusion, deliberately -- even 21 meetings is a small sample, five
+is smaller still, the real decision is driven by inflation and growth data this index
+doesn't see, and communication tone plausibly *lags* rather than leads the decision (an MPC
+that has already decided to hold may simply sound more hawkish to signal it isn't done
+watching inflation). But that's exactly the lens this whole piece has been built around: not
+what the SARB should do, but what its own words say about what it tends to do.
+
+## Conclusion
+
+Three takeaways, in decreasing order of confidence.
+
+**Word-count methods are genuinely useful for reading what a central bank talks about, both
+in volume and in substance.** The plain volume count (Section 1) and the topic model
+(Section 2) each produced a clean, historically coherent narrative with no manual curation
+beyond labelling the results -- exchange-rate crises, the post-2008 financial-stability
+pivot, the inflation dominance of the last decade all fall out of the data on their own
+terms. Nothing about the method is SARB-specific; it should travel to any central bank with
+a comparable public record. The SARB is simply the one with an existing paper to replicate.
+
+**Hawkish/dovish indices do correlate with actual policy, as expected -- but, at least for
+the SARB, far more so for statements than for speeches.** The correlation with the rate
+decision is real (statements: r=0.46; the combined index: r=0.47) and concentrated almost
+entirely in the statement itself, the one document written specifically to justify that
+decision. Speeches, scored on their own, correlate with the following meeting at only
+r=0.14 -- present and directionally right, but too weak to lean on. Whether that gap is a
+general feature of central-bank communication or particular to this bank, this dictionary,
+or this sample is an open question a cross-bank version of this pipeline could answer; we
+don't have that evidence yet.
+
+**On the specific question this piece was built to answer, the index doesn't make the
+case.** Communication reading this hawkish has historically preceded a hold as often as, or
+more often than, a hike -- true of the combined index, and still true, if less starkly,
+looking at the statement alone. The market's hike pricing ahead of 23 July 2026 was
+reasonable given the geopolitical backdrop (the US-Iran energy shock) -- and it was almost
+certainly shaped by other idiosyncratic pressures that week too, outside anything a
+communication-only index can see -- but on the SARB's own words, hawkish tone included,
+there was no clear signal pointing to a hike. If anything, the Bank's own
+communication history was quietly consistent with what it actually did.
+
+## Appendix: statements alone vs. speeches alone
+
+Sections 3 and 4 use the combined index, pooling statements and speeches into a single
+communication stream per the paper's own logic. It's worth pulling the two channels apart
+one more time to make the difference tangible, the same way Sections 1 and 2 kept treating
+statements and speeches as two distinct communication habits rather than one.
+
+<iframe src="/charts/statements-only-full.html" title="SARB hawkish/dovish index, MPC statements only, 1999-2026" style="width:100%; height:480px; border:none; border-radius:8px;" />
+
+<iframe src="/charts/speeches-only-full.html" title="SARB hawkish/dovish index, speeches only, 1994-2026" style="width:100%; height:480px; border:none; border-radius:8px;" />
+
+The two series don't just look different -- they sit at different levels. Speeches average
++0.76 across the sample; statements average +0.50, a full quarter-point cooler. That's a
+sizeable, systematic gap, not noise: the MPC statement is a terse, boilerplate-heavy
+document written by committee to survive legal and market scrutiny, while a speech is one
+official's take on a topic they chose, delivered to an audience that isn't parsing it for a
+rate signal -- more room for the kind of confident, reassuring language the Henry
+dictionary scores as hawkish. The statement series is also the tighter of the two, which is
+exactly what you'd expect from 173 documents that all follow the same template, against
+502 speeches that range from Governor's Reuters lectures to a Deputy Governor addressing a
+regional payments conference. Read together with Section 3's finding that even the *pooled*
+index runs hot, the takeaway is that speeches are doing most of that lifting -- if the goal
+were the coolest, most policy-neutral read of SARB communication, statements alone would
+get you closer to it than either the speeches series or the combined one. (Section 4 took
+this split further, redoing the meeting-comparison exercise separately for each channel.)
+
+## References
+
+To cite the paper this piece replicates and extends:
+
+> Gideon du Rand, Ruan Erasmus, Hylton Hollander, Monique Reid & Dawie van Lill (2021) The
+> evolution of central bank communication as experienced by the South Africa Reserve Bank,
+> *Economic History of Developing Regions*, 36:2, 282-312, DOI: 10.1080/20780389.2021.192510
+
+and, for the sentiment dictionary used in Sections 3 and 4:
+
+> Henry, E. (2008). Are Investors Influenced By How Earnings Press Releases Are Written?
+> *Journal of Business Communication*, 45(4).

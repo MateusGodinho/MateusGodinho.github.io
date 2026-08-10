@@ -1,0 +1,152 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const EXPERIENCE = [
+  {
+    role: "Economist",
+    org: "Genoa Capital",
+    location: "São Paulo, Brazil",
+    period: "Jun 2020 – May 2026",
+    bullets: [
+      "Responsible for macroeconomic coverage of emerging markets, with focus on monetary policy and global macroeconomic developments.",
+      "Developed macroeconomic scenarios and forecasts across emerging economies, particularly South Africa, China and Central & Eastern Europe.",
+      "Monitored and analyzed central bank communication, economic activity indicators, inflation dynamics and external sector developments across multiple global economies.",
+      "Contributed to developed markets coverage, including U.S. macroeconomic and monetary policy developments.",
+      "Prepared macroeconomic presentations and scenario discussions focused on global macro trends and policy developments.",
+      "Collaborated with the international desk in macroeconomic scenario discussions and analysis of global monetary policy developments.",
+      "Built quantitative frameworks for macroeconomic projections and policy analysis.",
+    ],
+  },
+  {
+    role: "Research Assistant",
+    org: "Fundação Instituto de Pesquisas Econômicas (FIPE)",
+    location: "São Paulo, Brazil",
+    period: "Apr 2017 – Dec 2017",
+    bullets: [
+      "Worked with labor market databases and economic data analysis.",
+      "Collected and organized data related to union negotiations and labor agreements.",
+      "Supported projects and client-focused labor market analysis.",
+    ],
+  },
+  {
+    role: "Trainee, Advisory / Internal Audit",
+    org: "EY",
+    location: "São Paulo, Brazil",
+    period: "Dec 2016 – Apr 2017",
+    bullets: [],
+  },
+  {
+    role: "Executive Secretary",
+    org: "Epicfy",
+    location: "São Paulo, Brazil",
+    period: "Apr 2016 – Aug 2016",
+    bullets: [],
+  },
+  {
+    role: "Economics Intern",
+    org: "Banco Fibra S/A",
+    location: "São Paulo, Brazil",
+    period: "Sep 2014 – Feb 2015",
+    bullets: [
+      "Worked alongside the bank's chief economist.",
+      "Organized macroeconomic databases and economic indicators.",
+      "Assisted in the preparation of weekly macroeconomic reports, with focus on fiscal policy.",
+    ],
+  },
+];
+
+const EDUCATION = [
+  {
+    degree: "M.A. in Economics",
+    org: "Fundação Getulio Vargas (EPGE/FGV)",
+    period: "2018 – 2020",
+    bullets: [
+      "Research Assistant to Professor Cecilia Machado (Labor Economics / Econometrics)",
+      "Teaching Assistant for Statistics and Regulation Economics",
+    ],
+  },
+  {
+    degree: "B.A. in Economics",
+    org: "Universidade de São Paulo (FEA-USP)",
+    period: "2011 – 2015",
+    bullets: [],
+  },
+  {
+    degree: "Exchange Program",
+    org: "HEC Montréal, Canada",
+    period: "2013",
+    bullets: [],
+  },
+];
+
+const SKILLS = [
+  "Econometrics",
+  "Macroeconomic Modeling",
+  "Inflation Forecasting",
+  "Monetary Policy Analysis",
+  "Quantitative Analysis",
+  "EViews",
+  "Stata",
+  "Matlab",
+];
+
+const LANGUAGES = [
+  { lang: "Portuguese", level: "Native" },
+  { lang: "English", level: "Professional fluency" },
+  { lang: "French", level: "Intermediate" },
+];
+---
+
+<BaseLayout title="CV" description="Curriculum vitae — Mateus Godinho, Economist.">
+  <section>
+    <h1>CV</h1>
+    <p class="meta">São Paulo, Brazil · mateus.godinho0704@gmail.com</p>
+    <p>
+      <a class="btn" href="/cv.pdf" target="_blank">Download PDF</a>
+    </p>
+  </section>
+
+  <section style="margin-top: 40px;">
+    <h2>Experience</h2>
+    {EXPERIENCE.map((job) => (
+      <div class="card">
+        <h3>{job.role} — {job.org}</h3>
+        <p class="meta">{job.location} · {job.period}</p>
+        {job.bullets.length > 0 && (
+          <ul>
+            {job.bullets.map((b) => <li>{b}</li>)}
+          </ul>
+        )}
+      </div>
+    ))}
+  </section>
+
+  <section style="margin-top: 40px;">
+    <h2>Education</h2>
+    {EDUCATION.map((e) => (
+      <div class="card">
+        <h3>{e.degree}</h3>
+        <p class="meta">{e.org} · {e.period}</p>
+        {e.bullets.length > 0 && (
+          <ul>
+            {e.bullets.map((b) => <li>{b}</li>)}
+          </ul>
+        )}
+      </div>
+    ))}
+  </section>
+
+  <section style="margin-top: 40px;">
+    <h2>Skills</h2>
+    <div>
+      {SKILLS.map((s) => <span class="tag">{s}</span>)}
+    </div>
+  </section>
+
+  <section style="margin-top: 40px;">
+    <h2>Languages</h2>
+    <div>
+      {LANGUAGES.map((l) => <span class="tag">{l.lang} — {l.level}</span>)}
+    </div>
+  </section>
+</BaseLayout>

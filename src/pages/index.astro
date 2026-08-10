@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const allArticles = await getCollection("articles", ({ data }) => !data.draft || import.meta.env.DEV);
+const featured = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
+
+const NAME = "Mateus Godinho";
+const TAGLINE = "Economist covering emerging markets macro and monetary policy.";
+const BIO = `Six years as an economist at Genoa Capital, covering monetary policy and
+  macro across emerging markets -- South Africa, China, and Central & Eastern Europe,
+  plus supplementary US coverage. M.A. in Economics (FGV/EPGE). This site is where I
+  publish independent research, including code, on central bank communication and
+  inflation dynamics.`;
+
+const LINKS = [
+  { label: "GitHub", href: "https://github.com/MateusGodinho" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/mateus-machado-godinho" },
+  { label: "Email", href: "mailto:mateus.godinho0704@gmail.com" },
+];
+
+const HIGHLIGHTS = [
+  "6 years as an Economist at Genoa Capital covering EM monetary policy, with deep focus on South Africa, China, and Central & Eastern Europe",
+  "M.A. in Economics, FGV/EPGE -- research assistant to Prof. Cecilia Machado (labor economics/econometrics), TA for Statistics and Regulation Economics",
+  "Building open-source NLP tooling (Python) to quantify central bank communication tone -- see Research below",
+];
+---
+
+<BaseLayout title="Home" description={TAGLINE}>
+  <section>
+    <h1>{NAME}</h1>
+    <p style="font-size: 18px; color: var(--text-secondary);">{TAGLINE}</p>
+    <p>{BIO}</p>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0 8px;">
+      {LINKS.map((l) => (
+        <a class="btn" href={l.href} target="_blank" rel="noopener">{l.label}</a>
+      ))}
+      <a class="btn btn-primary" href="/cv">Full CV</a>
+    </div>
+  </section>
+
+  <section style="margin-top: 48px;">
+    <h2>Highlights</h2>
+    <ul>
+      {HIGHLIGHTS.map((h) => <li>{h}</li>)}
+    </ul>
+  </section>
+
+  <section style="margin-top: 48px;">
+    <h2>Featured research</h2>
+    {featured.length === 0 && <p style="color: var(--muted);">No articles published yet.</p>}
+    {featured.map((post) => (
+      <a href={`/articles/${post.id}/`} style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <h3>{post.data.title}{post.data.draft && " (draft)"}</h3>
+          <p class="meta">{post.data.pubDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
+          <p>{post.data.description}</p>
+        </div>
+      </a>
+    ))}
+    <p><a href="/articles">See all research →</a></p>
+  </section>
+</BaseLayout>

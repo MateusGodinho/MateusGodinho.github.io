@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const allArticles = await getCollection("articles", ({ data }) => !data.draft || import.meta.env.DEV);
+const sorted = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="Research" description="Independent research notes.">
+  <h1>Research</h1>
+  {sorted.length === 0 && <p style="color: var(--muted);">No articles published yet.</p>}
+  {sorted.map((post) => (
+    <a href={`/articles/${post.id}/`} style="text-decoration: none; color: inherit;">
+      <div class="card">
+        <h3>{post.data.title}{post.data.draft && " (draft)"}</h3>
+        <p class="meta">
+          {post.data.pubDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+        </p>
+        <p>{post.data.description}</p>
+        <div>
+          {post.data.tags.map((t: string) => <span class="tag">{t}</span>)}
+        </div>
+      </div>
+    </a>
+  ))}
+</BaseLayout>
