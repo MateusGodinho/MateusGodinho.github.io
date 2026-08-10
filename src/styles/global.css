@@ -1,59 +1,75 @@
 @font-face {
-  font-family: "Caveat";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/fonts/caveat-700.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Lora";
+  font-family: "Plex Serif";
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url("/fonts/lora-600.woff2") format("woff2");
+  src: url("/fonts/plex-serif-600.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: "Lora";
+  font-family: "Plex Sans";
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400;
   font-display: swap;
-  src: url("/fonts/lora-700.woff2") format("woff2");
+  src: url("/fonts/plex-sans-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Plex Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/plex-sans-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/plex-mono-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Plex Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/plex-mono-600.woff2") format("woff2");
 }
 
 :root {
   color-scheme: light dark;
 
-  --bg: #fdfbf8;
+  --bg: #f5f7f9;
   --surface: #ffffff;
-  --text-primary: #2b2926;
-  --text-secondary: #6e665c;
-  --muted: #a39a8d;
-  --border: rgba(43, 38, 30, 0.1);
-  --accent: #c98a3a;
-  --accent-soft: rgba(201, 138, 58, 0.24);
+  --text-primary: #17222f;
+  --text-secondary: #4c5b6b;
+  --muted: #8894a0;
+  --border: rgba(23, 34, 47, 0.11);
+  --accent: #1f5a80;
+  --accent-soft: rgba(31, 90, 128, 0.12);
   --accent-ink: #ffffff;
-  --shadow: 0 1px 2px rgba(43, 38, 30, 0.05), 0 8px 20px rgba(43, 38, 30, 0.07);
+  --shadow: 0 1px 2px rgba(23, 34, 47, 0.05), 0 8px 20px rgba(23, 34, 47, 0.07);
   --max-width: 720px;
   --max-width-wide: 1040px;
 
-  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Lora", Georgia, serif;
-  --font-script: "Caveat", cursive;
+  --font-body: "Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Plex Serif", Georgia, serif;
+  --font-mono: "Plex Mono", ui-monospace, "SF Mono", Consolas, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1c1a17;
-    --surface: #262320;
-    --text-primary: #f2ece2;
-    --text-secondary: #cabfae;
-    --muted: #8f8576;
+    --bg: #10161d;
+    --surface: #182028;
+    --text-primary: #eef2f6;
+    --text-secondary: #b3c0cc;
+    --muted: #74838f;
     --border: rgba(255, 255, 255, 0.1);
-    --accent: #e0a851;
-    --accent-soft: rgba(224, 168, 81, 0.2);
-    --accent-ink: #1c1a17;
+    --accent: #6cb2dd;
+    --accent-soft: rgba(108, 178, 221, 0.16);
+    --accent-ink: #10161d;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 20px rgba(0, 0, 0, 0.35);
   }
 }
@@ -108,12 +124,12 @@ h3 {
 
 /* small-caps section label, e.g. "LATEST RESEARCH..." */
 .eyebrow {
-  font-family: var(--font-body);
-  font-size: 13px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--accent);
 }
 
 /* --- nav --- */
@@ -125,7 +141,7 @@ h3 {
 
 .site-nav .brand-row {
   text-align: center;
-  padding: 36px 24px 22px;
+  padding: 36px 24px 20px;
 }
 
 .site-nav .brand {
@@ -133,33 +149,31 @@ h3 {
   color: var(--text-primary);
 }
 
-.site-nav .brand .script {
-  position: relative;
-  font-family: var(--font-script);
-  font-size: 40px;
-  line-height: 1;
-  padding: 0 6px;
-}
-
-.site-nav .brand .script::before {
-  content: "";
-  position: absolute;
-  left: 2px;
-  right: 2px;
-  bottom: 6px;
-  height: 12px;
-  background: var(--accent-soft);
-  border-radius: 2px;
-  z-index: -1;
-}
-
-.site-nav .brand .word {
+.site-nav .brand .first {
   display: block;
-  margin-top: 2px;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.28em;
-  padding-left: 0.28em; /* optically re-center against letter-spacing */
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.site-nav .brand .last {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  padding-left: 0.34em; /* optically re-center against letter-spacing */
+  color: var(--accent);
+}
+
+.site-nav .brand .rule {
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  margin: 12px auto 0;
 }
 
 .site-nav .links {
@@ -195,23 +209,25 @@ h3 {
 /* --- shared bits --- */
 .tag {
   display: inline-block;
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   color: var(--accent);
   background: var(--accent-soft);
-  border-radius: 999px;
-  padding: 3px 11px;
+  border-radius: 4px;
+  padding: 3px 9px;
   margin: 0 6px 6px 0;
 }
 
 .card {
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 20px 24px;
   background: var(--surface);
   box-shadow: var(--shadow);
   margin-bottom: 16px;
+  border-top: 3px solid var(--accent);
 }
 
 .card h3 {
@@ -219,8 +235,9 @@ h3 {
   font-size: 17px;
 }
 
-.card .meta {
-  font-size: 13px;
+.meta {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
   color: var(--muted);
   margin-bottom: 8px;
 }
@@ -228,7 +245,7 @@ h3 {
 .btn {
   display: inline-block;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 6px;
   padding: 9px 18px;
   font-size: 13.5px;
   font-weight: 600;
@@ -278,7 +295,6 @@ h3 {
   text-align: center;
   font-family: var(--font-display);
   font-size: 18px;
-  font-style: italic;
   color: var(--text-secondary);
   margin: -20px 0 44px;
 }
@@ -316,10 +332,11 @@ h3 {
 .research-card .thumb {
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 6px;
   background: var(--surface);
   box-shadow: var(--shadow);
   margin-bottom: 12px;
+  border-bottom: 3px solid var(--accent);
 }
 
 .research-card .thumb img {
@@ -346,10 +363,10 @@ h3 {
 }
 
 .research-card .cap {
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
   text-align: center;
   color: var(--text-primary);
 }
@@ -357,15 +374,16 @@ h3 {
 /* --- sidebar --- */
 .side-card {
   background: var(--surface);
-  border-radius: 14px;
+  border-radius: 8px;
   box-shadow: var(--shadow);
   padding: 24px;
   margin-bottom: 24px;
+  border-top: 3px solid var(--accent);
 }
 
 .avatar {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: var(--accent-soft);
   color: var(--accent);
@@ -376,6 +394,13 @@ h3 {
   font-weight: 700;
   font-size: 20px;
   flex: none;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .side-card .who {
@@ -427,8 +452,8 @@ h3 {
 
 .cta-box {
   background: var(--bg);
-  border: 1px dashed var(--border);
-  border-radius: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
   padding: 22px;
   text-align: center;
 }
@@ -462,7 +487,7 @@ article pre {
 }
 
 article code {
-  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.9em;
 }
 
@@ -503,6 +528,7 @@ article thead th {
 
 article td:first-child,
 article th:first-child {
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
