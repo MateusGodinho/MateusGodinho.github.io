@@ -1,0 +1,195 @@
+---
+title: "Reading the SARB With an LLM: Context Always Matters"
+description: "A follow-up to the original SARB text-mining piece: replacing the Henry (2008) word-count method with a calibrated LLM classifier, and checking whether it fixes the structural hawkish bias the dictionary approach couldn't shake."
+pubDate: 2026-09-04
+draft: false
+tags: ["SARB", "monetary policy", "NLP", "LLM", "South Africa"]
+---
+
+**Key takeaways**
+
+- The LLM index is a meaningfully more sensitive instrument than the word-count dictionary:
+  it tells hawkish holds from dovish ones, and cuts from hikes, where Henry's method reads
+  almost everything as some shade of hawkish.
+- Correlation with what the MPC actually did picks up sharply -- against the size of the
+  rate move (bps), r goes from 0.48 to 0.80 for the combined index, 0.49 to 0.86 for
+  statements alone.
+- The method can tell whether a speech is actually about monetary policy stance at all --
+  43% of the speech corpus (215 of 502) gets flagged off-topic and excluded, something a
+  word dictionary has no way to know.
+- It runs on the exact same historical corpus the dictionary method used -- no new
+  documents, no new scraping, just a different way of reading what was already collected.
+- The result is a more trustworthy live tracker of SARB communication going forward, plus a
+  public reader anyone can paste a statement or speech into and get the same calibrated read.
+- The bigger point sits underneath all of it: the gain here isn't an LLM doing research
+  faster, it's an LLM doing the operational classification work itself, meeting after
+  meeting, not just speeding up the person who used to do it by hand.
+
+The [first piece](/articles/sarb-communication) in this series flagged its own ceiling: a
+bag-of-words dictionary (Henry, 2008) can't read context, so it scores "growth" as hawkish
+even in "growth has weakened sharply," and "risk" as dovish even in "the risk that inflation
+runs too hot." The result was a hawkish/dovish index that tracked real policy directionally
+but ran structurally hot -- even rate cuts averaged a positive (hawkish) score. That piece
+named the fix as future work: an LLM-based classifier that reads for stance instead of
+counting words, run alongside the dictionary as a check. This is that classifier, built and
+tested against the same corpus.
+
+<iframe src="/charts/henry-vs-llm-index.html" title="SARB combined index: Henry dictionary vs. LLM classifier, by meeting" style="width:100%; height:480px; border:none; border-radius:8px;" />
+
+Same 173 meetings, same documents, one line per method. The dictionary line barely dips
+below zero across 26 years; the LLM line spends real stretches there, on cutting cycles in
+particular -- 2003, 2009, 2020, 2024. The rest of this piece is about why.
+
+## Why this isn't just "paste it into Claude"
+
+Two design choices separate this from naively prompting a chatbot, and both come from
+gaps the closest prior work names in itself.
+
+**Whole documents, not isolated sentences.** [Kim, Spörer, Lee & Handschuh
+(2024)](https://dl.acm.org/doi/10.1145/3677052.3698675) benchmarked GPT-4 and Llama-3-70B
+against FinBERT and a word-count baseline (VADER) on FOMC minutes -- VADER managed 44.3%
+accuracy against human-labeled sentences, general LLMs reached 68-79%. Their own stated
+limitation: they classified sentences stripped of surrounding context, "an approach [that]
+did not consider inter-sentence contexts." This project scores whole statements and
+speeches, exactly the context their method had to discard.
+
+**Structured output, not hopeful prompting.** That same paper spent real effort getting
+GPT-4 to return parseable JSON -- one prompt design left 11.25% of replies unparseable,
+and asking the model to explain its reasoning (chain-of-thought) made parsing *worse*, so
+they dropped it. The Claude API's structured-output mode (`output_config` with a JSON
+schema) makes this a non-issue: the response is validated server-side against a schema, so
+the model can't return malformed output. That specific 2024 headache doesn't exist here.
+
+The [IMF's 2025 large-scale study](https://www.imf.org/en/publications/wp/issues/2025/06/06/from-text-to-quantified-insights-a-large-scale-llm-analysis-of-central-bank-communication-567522)
+(Silva, Moriya & Veyrune -- 74,882 documents, 169 central banks, 1884-2025) is the scale
+anchor for this whole approach, and it's worth being upfront about how much smaller this
+project is by comparison: theirs is a fine-tuned model trained to classify stance,
+sentiment, and audience separately, across the largest central-bank text corpus assembled
+to date. This project isn't a different approach to that same problem so much as a
+simplification of it -- one institution, one dimension, an explicit hawkish-dovish read of
+SARB's own communication, produced with a general-purpose model calibrated by hand rather
+than fine-tuned on a purpose-built dataset. What the two share is the diagnosis: the IMF
+paper names, almost verbatim, the same failure mode this project set out to fix --
+"risk-related statements could be misclassified as negative, while confidence-building
+messages might be mistaken for positive sentiment." Context is what a bare word count is
+missing, in both cases; the IMF paper is evidence that problem holds at scale, across the
+whole universe of central-bank communication, not proof that this specific, narrower
+implementation gets it right.
+
+That points to the same conclusion this project keeps landing on: pasting a
+statement into Claude and asking "is this hawkish or dovish?" would get you an answer, but
+not a comparable one. What the IMF's categories and this project's calibration are both
+standing in for is the same thing -- the specific communication history of one
+institution. SARB's language has its own register, its own recurring phrases, its own
+sense of what "elevated risk" or "a measured pace" means in context; a model reading cold,
+with no anchors drawn from that history, has no way to know where a given statement sits
+on this institution's own scale rather than some generic one. That's what the calibration
+pass buys here: fifteen real documents and two adversarial sentences, checked by hand
+against what SARB was actually signalling at each of those meetings, turned into anchors
+the model reads every document against afterward. Skip that step and the model still
+answers -- it just has nothing SARB-specific to compare the answer to.
+
+## The method, briefly
+
+Same corpus as before: 173 MPC statements, 502 English-language speeches, 1994-2026. Each
+document is scored on the same -2 (most dovish) to +2 (most hawkish) scale, with anchors
+given directly in the prompt rather than left to the model's own judgment, plus an
+`on_topic` flag for documents that aren't really about policy stance at all -- a banknote
+launch, a payments-system address, a green-finance speech, all of which the Henry
+dictionary had scored as directional extremes purely on incidental vocabulary.
+
+Calibration ran before anything else touched the full corpus: 15 real documents chosen to
+span known extremes (the 2002 post-rand-crisis hawkish peak, the 2009/2019/2020 dovish
+troughs, the July 2026 meeting this whole series exists because of) plus two hand-built
+sentences designed to break a dictionary -- the exact "growth"/"risk" examples above --
+run through both Claude Haiku 4.5 and Sonnet 5, then reviewed by hand against what actually
+happened at each of those meetings. Both models passed the two negation tests cleanly. The
+one case where they disagreed with each other was July 2026 itself, and the smaller,
+cheaper model's reading -- more measured, weighing the case for holding against the case
+for hiking rather than leaning hard into the hawkish scenario -- held up better on review.
+That settled the model choice: Haiku 4.5 for the full run, submitted as a single batch job
+covering all 675 documents.
+
+## Does it fix the skew?
+
+Splitting all 173 meetings by what the MPC actually did:
+
+| | hike | hold | cut |
+|---|---|---|---|
+| Henry (dictionary) | +0.77 | +0.63 | +0.38 |
+| LLM | **+1.01** | **+0.19** | **−0.98** |
+
+The dictionary never goes negative -- even a cut reads hawkish on average, the calibration
+problem the original piece could only document, not fix. The LLM index crosses zero in the
+right direction for every bucket. Correlation with the actual size of the rate move (bps)
+moves the same way: **r = 0.48 → 0.80** for the combined index, **r = 0.49 → 0.86** for
+statements alone.
+
+<iframe src="/charts/llm-contribution-full.html" title="SARB LLM index: contribution to the combined index, by meeting" style="width:100%; height:480px; border:none; border-radius:8px;" />
+
+On the meeting that motivated this entire series: the Henry index read July 2026 at +0.78.
+The LLM combined index reads it at **+0.53** -- still on the hawkish side of neutral, but
+markedly more measured, which is a closer match to how that meeting's communication was
+actually described at the time (hawkish on the external backdrop, benign on the domestic
+outlook) than the dictionary's flatter, hotter read.
+
+One more number worth naming: 215 of 502 speeches (43%) got flagged `on_topic: false` and
+were excluded from the aggregation rather than counted as neutral. Spot-checking a random
+sample of the excluded titles turns up exactly what you'd expect -- addresses on SWIFT,
+payment-system launches, labour law conferences, university speeches -- confirming this
+isn't the model being trigger-happy; it's a large share of the speech corpus genuinely not
+being about policy stance, something the topic model in the first piece already showed
+qualitatively.
+
+That exclusion is also part of why the speech bars above look so much smaller under the
+LLM than under Henry, though not the biggest part. Two effects are at work, and they're not
+the same size. The on-topic filter cuts the average number of speeches counted per meeting
+window from 2.37 (Henry, everything included) to 1.31 (LLM, off-topic ones dropped) -- a
+real, mechanical reduction. But it doesn't explain the gap on its own: Henry's mean score
+across every speech was +0.756, against +0.397 for the LLM across on-topic speeches only --
+roughly half, even after the filter already removed the speeches with nothing to do with
+policy. And those excluded speeches scored a mean of +0.036, near zero rather than extreme,
+so dropping them should have pulled the remaining average *up*, if anything, not down. The
+larger driver is the same calibration difference already visible on the statements side:
+the LLM reads even clearly on-topic speeches more moderately than the dictionary did. The
+filtering is real, but it's the smaller of the two effects.
+
+## What this doesn't settle
+
+This is one run, not an average of several -- LLM output isn't fully deterministic even at
+low temperature, and a second run would likely shift individual scores by a few tenths
+without changing the picture above. The Haiku-over-Sonnet call rests on a single
+differentiating case in calibration, not a large sample; it's a reasonable bet, not a
+proof. The `on_topic` flag was spot-checked on a sample of exclusions, not audited across
+all 215. And the model itself is a moving target: pin the exact version if you rerun this,
+because "the same prompt" stops being the same experiment when the model behind it changes.
+
+Two more, neither a defect and neither likely to get fixed. This calibration is SARB's, not
+a general-purpose one: the anchors, the examples, and the July 2026 tie-break were all
+chosen by reading SARB's own communication style, so pointing this same prompt at the Fed,
+the ECB, or any other central bank wouldn't transfer cleanly -- each would need its own
+calibration pass against its own history first. And the corpus has a hard ceiling this
+method can't see past: SARB officials give remarks at private events, closed-door
+briefings, and calls that never become a public transcript. That material would very
+plausibly sharpen what the model has learned about how these specific speakers actually
+talk, but there's no path to recovering it -- it was never public to begin with.
+
+Try the calibrated prompt on your own excerpt in the [SARB Hawkish/Dovish
+Reader](https://sarb-hawkish-dove-llm-59qcmhguxqvpvab9kldq2q.streamlit.app/) -- this method
+and the original dictionary score side by side, no login needed.
+Code, prompts, and the calibration set: [GitHub](https://github.com/MateusGodinho/sarb-hawkish-dove-llm)
+(a companion repo to the [original dictionary-method
+project](https://github.com/MateusGodinho/sarb-hawkish-dove)).
+
+## References
+
+> Silva, T. C., Moriya, K., & Veyrune, R. M. (2025). From Text to Quantified Insights: A
+> Large-Scale LLM Analysis of Central Bank Communication. *IMF Working Paper* WP/25/109.
+
+> Kim, W., Spörer, J., Lee, C. L., & Handschuh, S. (2024). Is Small Really Beautiful for
+> Central Bank Communication? Evaluating Language Models for Finance: Llama-3-70B, GPT-4,
+> FinBERT-FOMC, FinBERT, and VADER. *5th ACM International Conference on AI in Finance
+> (ICAIF '24)*.
+
+> Henry, E. (2008). Are Investors Influenced By How Earnings Press Releases Are Written?
+> *Journal of Business Communication*, 45(4).

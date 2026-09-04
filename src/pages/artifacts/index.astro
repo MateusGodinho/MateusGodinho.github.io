@@ -3,12 +3,12 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { ARTIFACTS } from "../../data/artifacts";
 ---
 
-<BaseLayout title="Artifacts" description="Interactive tools built with Claude alongside the research.">
-  <p class="eyebrow">Claude artifacts</p>
-  <h1>All artifacts</h1>
-  <p class="section-intro" style="margin-bottom: 8px;">Small interactive tools I build with
-    Claude alongside the research -- self-contained demos that run the actual method in
-    your browser, no install required. Adding to this as I go.</p>
+<BaseLayout title="Research Tools" description="Interactive tools built alongside the research -- some Claude artifacts, some small hosted apps.">
+  <p class="eyebrow">Research tools</p>
+  <h1>Research Tools</h1>
+  <p class="section-intro" style="margin-bottom: 8px;">Small interactive tools I build
+    alongside the research -- demos that run the actual method live, no install required.
+    Adding to this as I go.</p>
 
   {ARTIFACTS.length === 0 && <p style="color: var(--muted);">No artifacts published yet.</p>}
 
